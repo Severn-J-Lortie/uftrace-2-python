@@ -6,7 +6,7 @@ Example repo showing how to use uftrace output in Python
 - Python
 - elfutils
 
-## Getting started
+## Compiling
 
 ### Normal environments
 You should be able to build uftrace following the instructions in their repositiory just fine.
@@ -58,3 +58,4 @@ If all went well, you should be able to run this command:
 `$HOME/uftrace/bin/uftrace --version` and the version information will be displayed. If you want you can add the uftrace/bin directory to your $PATH variable for ease of use:
 `echo 'export PATH="$PATH:$HOME/uftrace/bin"' >> ~/.bashrc && source ~/.bashrc`. So now you can just use `uftrace` to invoke it.
 
+### Running the test

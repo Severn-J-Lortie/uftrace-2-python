@@ -1,6 +1,8 @@
 import json
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from matplotlib import colormaps
+
 
 def generate_stack_timeline(trace_file):
   with open(trace_file, 'r') as file:
@@ -32,24 +34,36 @@ def generate_stack_timeline(trace_file):
   return event_timeline
 
 def plot_event_timeline(event_timeline):
-  fig, ax = plt.subplots()
+  fig, ax = plt.subplots(figsize=(10, 6))
+  ax.set_xlim(0, max([event['end'] for event in event_timeline])) #have to set this, bounding box would change each time, causing incorrect text width
 
   bar_height = 1
   bar_vertical_space = 0.25
 
+  colormap = colormaps.get_cmap('tab20c')
   renderer = fig.canvas.get_renderer()
-  for event in event_timeline:
+
+  for i, event in enumerate(event_timeline):
     y_start = event['depth'] * (bar_vertical_space + bar_height)
     x_start = event['start']
     bar_width =  event['duration']
-    ax.broken_barh([(x_start, bar_width)], (y_start, bar_height), facecolors='tab:blue')
     text = ax.text(x_start + bar_width / 2, y_start + bar_height / 2, event['name'], ha='center', va='center', color='white')
     bounding_box = text.get_window_extent(renderer=renderer)
     text_width = ax.transData.inverted().transform((bounding_box.width, 0))[0] - ax.transData.inverted().transform((0, 0))[0]
-    if bar_width < text_width:
-      text.remove()
+    legend_label = None
+    if bar_width < text_width: #if bar is too small
+      max_bar_text_width = int((bar_width/text_width) * len(event['name']))
+      if max_bar_text_width > 4: #event for at least 1 character and ...
+        text.set_text(event['name'][:max_bar_text_width - 3] + '...')
+      else:
+        text.remove()
+      legend_label = event['name'].lstrip('_')
+
+    bar_colour = colormap(i / len(event_timeline))
+    ax.broken_barh([(x_start, bar_width)], (y_start, bar_height), facecolors=bar_colour, label=legend_label)
 
   ax.set_xlabel('time (ns)')
+  plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncols=3, mode="expand", borderaxespad=0.)
   plt.savefig('./event_timeline.png')
 
 timeline = generate_stack_timeline('./trace.json')

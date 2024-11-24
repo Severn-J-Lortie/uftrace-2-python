@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib import colormaps
 
+prev_annotation = None
 
 def generate_stack_timeline(trace_file):
   with open(trace_file, 'r') as file:
@@ -50,21 +51,32 @@ def plot_event_timeline(event_timeline):
     text = ax.text(x_start + bar_width / 2, y_start + bar_height / 2, event['name'], ha='center', va='center', color='white')
     bounding_box = text.get_window_extent(renderer=renderer)
     text_width = ax.transData.inverted().transform((bounding_box.width, 0))[0] - ax.transData.inverted().transform((0, 0))[0]
-    legend_label = None
     if bar_width < text_width: #if bar is too small
       max_bar_text_width = int((bar_width/text_width) * len(event['name']))
       if max_bar_text_width > 4: #event for at least 1 character and ...
         text.set_text(event['name'][:max_bar_text_width - 3] + '...')
       else:
         text.remove()
-      legend_label = event['name'].lstrip('_')
+    legend_label = event['name'].lstrip('_')
 
     bar_colour = colormap(i / len(event_timeline))
-    ax.broken_barh([(x_start, bar_width)], (y_start, bar_height), facecolors=bar_colour, label=legend_label)
+    ax.broken_barh([(x_start, bar_width)], (y_start, bar_height), facecolors=bar_colour, picker=True, label=legend_label)
 
   ax.set_xlabel('time (ns)')
-  plt.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left', ncols=3, mode="expand", borderaxespad=0.)
   plt.savefig('./event_timeline.png')
+
+  def hover(event):
+    global prev_annotation
+    label = event.artist.get_label()
+    if prev_annotation is not None: # need to clear previous annotation or else they will stack
+      prev_annotation.remove()
+
+    prev_annotation = ax.annotate(label, xy=(event.mouseevent.xdata,event.mouseevent.ydata),xytext=((ax.get_xlim()[1] / 3) , ax.get_ylim()[1] - 0.5), arrowprops=dict(arrowstyle="->",color="black",lw=1))
+    fig.canvas.draw()
+  
+  fig.canvas.mpl_connect('pick_event', hover)
+  plt.show()
+
 
 timeline = generate_stack_timeline('./trace.json')
 plot_event_timeline(timeline)

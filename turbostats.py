@@ -19,7 +19,7 @@ def run_turbostat(interval=1, output_csv="stats.csv"):
     print("No output from turbostat.")
     return
   headers = header_line.split()
-  headers.insert(0, "t");
+  headers.insert(0, "TIME_STAMP");
 
   with open(output_csv, "w") as csv_file:
     writer = csv.writer(csv_file)

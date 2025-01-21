@@ -59,7 +59,6 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
   # plot the power_metrics
   colormap = colormaps.get_cmap("tab20c")
   ax2 = ax.twinx()
-  ax2.set_zorder(3)
   labels = []
   for i, column in enumerate(columns):
     if not column in power_data.columns:
@@ -124,6 +123,7 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
     prev_annotation = ax4.annotate(label, xy=(event.mouseevent.xdata, event.mouseevent.ydata), xytext=(
         (ax4.get_xlim()[1] / 3), ax4.get_ylim()[1] - 0.5), arrowprops=dict(arrowstyle="->", color="black", lw=1))
     fig.canvas.draw()
+    print(label)
 
   fig.canvas.mpl_connect("pick_event", hover)
   plt.title(title)

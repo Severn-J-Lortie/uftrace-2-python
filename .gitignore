@@ -1,3 +1,5 @@
 *.code-workspace
 uftrace
 data
+*.data
+*.data.old

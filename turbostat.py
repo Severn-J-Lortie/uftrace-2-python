@@ -39,4 +39,4 @@ def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
 
 
 if __name__ == "__main__":
-  run_turbostat(interval=1)
+  run_turbostat(interval=0.1)

@@ -66,7 +66,7 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
     if not column in power_data.columns:
       raise Exception(f"Column {column} does not exist in the CSV.")
     for cpu in cpus:
-      if cpu.isnumeric():
+      if isinstance(cpu, (int)):
         stat_color = colormap(cpu / (max(cpus) + 1))
       else:
         stat_color = "blue"
@@ -159,10 +159,10 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
   plt.savefig("./stack-trace.png")
 
 
-timeline = generate_stack_timeline("./trace.json")
+timeline = generate_stack_timeline("./data/trace.json")
 
 # SOME USAGE:
 # pass in timeline, name of data file, the columns to plot, and then plot title.
 # plot_event_timeline(timeline, "main_test1731268056.txt",["POWER", "FREQ"], "CPUx Power and Frequency Against Trace Timeline")
-plot_event_timeline(timeline, "./stats.csv",
-                    ["Avg_MHz"], [1, 2, 3], "CPU Avg Freq. Against Trace Timeline")
+plot_event_timeline(timeline, "./data/stats.csv",
+                    ["Busy%"], [0, 1, 2, 3], "CPU Avg Freq. Against Trace Timeline")

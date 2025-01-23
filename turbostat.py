@@ -2,6 +2,7 @@ import subprocess
 import atexit
 import csv
 import time
+import psutil
 
 def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
   """
@@ -27,6 +28,7 @@ def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
     return
   headers = header_line.split()
   headers.insert(0, "TIME_STAMP")
+  headers.append("used_memory")
 
   with open(output_csv, "w") as csv_file:
     writer = csv.writer(csv_file)
@@ -36,14 +38,16 @@ def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
       line = line.strip()
       if not line or line.startswith("turbostat:"):
         continue
-      if line.split() == headers[1:]:
+      if line.split() == headers[1:-1]:
         timestamp = time.time_ns()
         continue
       cols = line.split()
+      mem = psutil.virtual_memory().percent
       cols.insert(0, timestamp / 1000)
+      cols.append(mem)
       writer.writerow(cols)
   process.wait()
 
 
 if __name__ == "__main__":
-  run_turbostat(interval=0.1)
+  run_turbostat(interval=0.08)

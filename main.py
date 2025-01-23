@@ -60,12 +60,16 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
   # plot the power_metrics
   colormap = colormaps.get_cmap("tab20c")
   ax2 = ax.twinx()
+  ax2.set_zorder(3)
   labels = []
   for i, column in enumerate(columns):
     if not column in power_data.columns:
       raise Exception(f"Column {column} does not exist in the CSV.")
     for cpu in cpus:
-      stat_color = colormap(cpu / (max(cpus) + 1))
+      if cpu.isnumeric():
+        stat_color = colormap(cpu / (max(cpus) + 1))
+      else:
+        stat_color = "blue"
       # arbritrary 5% buffer on top of max point.
       ax2.set_ylim(0, power_data[column].max() +
                   (power_data[column].max()) * .05)
@@ -73,7 +77,7 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
       ax2.yaxis.set_label_position("left")
       ax2.plot(power_data.loc[power_data["CPU"] == f"{cpu}", "TIME_STAMP"],
               power_data.loc[power_data["CPU"] == f"{cpu}", column], picker=False, color=stat_color)
-      labels.append(f"{units[column]} (cpu {cpu})" or f"{column} ({cpu})")
+      labels.append(f"{column if not column in units.keys() else units[column] } (cpu {cpu})" or f"{column} ({cpu})")
   ax2.legend(labels)
 
   # plot the traces

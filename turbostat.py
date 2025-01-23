@@ -1,7 +1,7 @@
 import subprocess
+import atexit
 import csv
 import time
-import math
 
 def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
   """
@@ -13,13 +13,20 @@ def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
   process = subprocess.Popen(
       cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+  def cleanup():
+    if process.poll() is None:
+      print("Killing turbostat process...")
+      process.terminate()
+
+  atexit.register(cleanup)
+
   try:
     header_line = next(process.stdout).strip()
   except StopIteration:
     print("No output from turbostat.")
     return
   headers = header_line.split()
-  headers.insert(0, "TIME_STAMP");
+  headers.insert(0, "TIME_STAMP")
 
   with open(output_csv, "w") as csv_file:
     writer = csv.writer(csv_file)

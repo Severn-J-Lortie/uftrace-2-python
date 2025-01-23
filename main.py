@@ -2,6 +2,7 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib import colormaps
+from matplotlib.widgets import Button
 import pandas as pd
 
 units = {"Avg_MHz": "Avg MHz (Hz)", "FREQ": "Frequency (Hz)"}
@@ -126,18 +127,38 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
     print(label)
 
   fig.canvas.mpl_connect("pick_event", hover)
-  plt.title(title)
 
-  # cosmetic changes to chart
+  #change the z-order of the axis to make top one clickable
+  axes = [ax2, ax4]
+  ax2.set_zorder(2)
+  ax4.set_zorder(1)
+  
+  def change_zorder(event):
+    start = axes.pop(0)
+    axes.append(start)
+
+    for i, axis in enumerate(axes):
+      axis.set_zorder(len(axes) - i)
+    
+    fig.canvas.draw()
+
+  #add room for button
+  fig.subplots_adjust(right=0.9)
+  # x,y,width,height
+  button_ax = plt.axes([0.95, 0.05, 0.04, 0.04])  
+  button = Button(button_ax, "Cycle")
+  button.on_clicked(change_zorder)
+
+  fig.suptitle(title)
 
   plt.show()  # Not gonna work over SSH (without X11 forwarding) --> save the plot as well
   plt.savefig("./stack-trace.png")
 
 
-timeline = generate_stack_timeline("./data/trace.json")
+timeline = generate_stack_timeline("./trace.json")
 
 # SOME USAGE:
 # pass in timeline, name of data file, the columns to plot, and then plot title.
 # plot_event_timeline(timeline, "main_test1731268056.txt",["POWER", "FREQ"], "CPUx Power and Frequency Against Trace Timeline")
-plot_event_timeline(timeline, "data/stats.csv",
+plot_event_timeline(timeline, "./stats.csv",
                     ["Avg_MHz"], [1, 2, 3], "CPU Avg Freq. Against Trace Timeline")

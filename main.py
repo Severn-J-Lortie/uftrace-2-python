@@ -165,4 +165,4 @@ timeline = generate_stack_timeline("./data/trace.json")
 # pass in timeline, name of data file, the columns to plot, and then plot title.
 # plot_event_timeline(timeline, "main_test1731268056.txt",["POWER", "FREQ"], "CPUx Power and Frequency Against Trace Timeline")
 plot_event_timeline(timeline, "./data/stats.csv",
-                    ["Busy%"], [0, 1, 2, 3], "CPU Avg Freq. Against Trace Timeline")
+                    ["Avg_MHz"], ['-'], "CPU Avg Freq. Against Trace Timeline")

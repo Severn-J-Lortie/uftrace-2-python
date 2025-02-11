@@ -6,11 +6,11 @@ UF_DIR=~/git/uftrace-2-python # This as well
 
 
 sudo echo # doing a no-op to force sudo before the turbostat script
-uftrace record -t 500us -- ${QS_DIR}/src/qs --nx 10 --ny 10 --nz 10 --nSteps 5 --inputFile ${QS_DIR}/Examples/NoFission/noFission.inp &
+uftrace record -t 5ms -- ${QS_DIR}/src/qs --nx 10 --ny 10 --nz 10 --nSteps 5 --inputFile ${QS_DIR}/Examples/NoFission/noFission.inp &
 qs_pid=$!
 python ${UF_DIR}/turbostat.py &
 turbo_pid=$!
 wait $qs_pid
-sleep 0.5
+sleep 1
 kill $turbo_pid
 uftrace dump --chrome > ${UF_DIR}/data/trace.json

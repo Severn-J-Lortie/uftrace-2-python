@@ -58,4 +58,32 @@ If all went well, you should be able to run this command:
 `$HOME/uftrace/bin/uftrace --version` and the version information will be displayed. If you want you can add the uftrace/bin directory to your $PATH variable for ease of use:
 `echo 'export PATH="$PATH:$HOME/uftrace/bin"' >> ~/.bashrc && source ~/.bashrc`. So now you can just use `uftrace` to invoke it.
 
-### Running the test
+## Running Tests
+### Local
+Simply run `./trace-qs.sh`. This is a bash script which will run Quicksilver 3 times and record the trace output into the ./data directory. The output will be in a GZIP file named with the current date and time. Each run is in its own folder.
+### CAC
+
+**sudo:** turbostat will require `sudo` to run. So, if you're going to queue this bash script up with `srun`, make sure that you modify the initial line: `sudo echo` to something like `echo "your_password" | sudo -S echo`.
+
+**Quicksilver concerns:**
+The CAC is tricker because you have to make sure that Quicksilver is compiled without OpenMPI enabled. For a long chain of reasons I won't get into now, you cannot run OpenMPI stuff on the CAC. So, just modify the Makefile in your Quicksilver repo to look like:
+```
+###############################################################################
+### GCC -- with MPI and OpenMP
+###############################################################################
+# GCC -- without MPI, but with OpenMP
+OPENMP_FLAGS = -DHAVE_OPENMP -fopenmp
+OPENMP_LDFLAGS = -fopenmp
+# Remove MPI_FLAGS since we are not using MPI:
+# MPI_FLAGS = -DHAVE_MPI
+OPTFLAGS = -O2
+
+# Use a standard C++ compiler
+CXX = g++
+CXXFLAGS = -std=c++11 $(OPTFLAGS) -Wpedantic
+# Exclude MPI_FLAGS from CPPFLAGS:
+CPPFLAGS = $(OPENMP_FLAGS)
+LDFLAGS = $(OPENMP_LDFLAGS)
+
+```
+and then `make clean && make` to recompile. From the on out it should work.

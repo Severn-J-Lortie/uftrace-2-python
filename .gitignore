@@ -3,5 +3,4 @@ uftrace
 data
 *.data
 *.data.old
-uf-data
 venv

@@ -3,6 +3,7 @@ import atexit
 import csv
 import time
 import psutil
+import argparse
 
 def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
   """
@@ -50,4 +51,7 @@ def run_turbostat(interval=0.5, output_csv="./data/stats.csv"):
 
 
 if __name__ == "__main__":
-  run_turbostat(interval=0.08)
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-o", "--output-dir", help="Output data directory to write stats.csv file", type=str)
+  args = parser.parse_args()
+  run_turbostat(interval=0.08, output_csv=args.output_dir)

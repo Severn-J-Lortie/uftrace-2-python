@@ -76,7 +76,7 @@ OPENMP_FLAGS = -DHAVE_OPENMP -fopenmp
 OPENMP_LDFLAGS = -fopenmp
 # Remove MPI_FLAGS since we are not using MPI:
 # MPI_FLAGS = -DHAVE_MPI
-OPTFLAGS = -O2
+OPTFLAGS = -O2 -pg
 
 # Use a standard C++ compiler
 CXX = g++

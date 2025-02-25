@@ -13,7 +13,7 @@ INFLUXDB_TOKEN = os.environ['INFLUX_GENERAL_API_TOKEN']
 INFLUXDB_ORG = "main"
 INFLUXDB_BUCKET = "powerstats"
 
-def run_turbostat(run_id, interval=0.5, ):
+def run_turbostat(run_id, interval=0.5):
   """
   Runs turbostat with the specified interval (in seconds),
   and parses its output line by line. This writes data to InfluxDB.

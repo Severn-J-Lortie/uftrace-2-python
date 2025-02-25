@@ -4,6 +4,8 @@ import matplotlib.ticker as ticker
 from matplotlib import colormaps
 from matplotlib.widgets import Button
 import pandas as pd
+import argparse
+from os import path
 
 units = {"Avg_MHz": "Avg MHz (Hz)", "FREQ": "Frequency (Hz)"}
 
@@ -158,11 +160,17 @@ def plot_event_timeline(event_timeline, power_measurements, columns, cpus, title
   plt.show()  # Not gonna work over SSH (without X11 forwarding) --> save the plot as well
   plt.savefig("./stack-trace.png")
 
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-d", "--data-dir", help="Path to data directory for the run. It must contain a stats.csv and trace.json file", type=str, required=True)
+  parser.add_argument("-c", "--cpu", help="A list of CPUs for which to view the data", type=list, required=True)
+  parser.add_argument("-f", "--fields", help="One or more fields to view. They must match a header in the stats.csv file", nargs="+", type=str, required=True)
+  parser.add_argument("-p", "--plot-title", help="Optional title of the plot", type=str)
+  args = parser.parse_args()
+  trace_file_path = path.join(args.data_dir, "trace.json")
+  stats_file_path = path.join(args.data_dir, "stats.csv")
+  timeline = generate_stack_timeline(trace_file_path)
+  plot_event_timeline(timeline, stats_file_path,
+                      args.fields, args.cpu, args.plot_title if args.plot_title else "Plot")
 
-timeline = generate_stack_timeline("./data/trace.json")
 
-# SOME USAGE:
-# pass in timeline, name of data file, the columns to plot, and then plot title.
-# plot_event_timeline(timeline, "main_test1731268056.txt",["POWER", "FREQ"], "CPUx Power and Frequency Against Trace Timeline")
-plot_event_timeline(timeline, "./data/stats.csv",
-                    ["Avg_MHz"], ['-'], "CPU Avg Freq. Against Trace Timeline")

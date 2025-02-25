@@ -6,7 +6,10 @@ Example repo showing how to use uftrace output in Python
 - Python
 - elfutils
 
-## Compiling
+## Testing data
+Please store all testing data in the [team Sharepoint](https://queensuca.sharepoint.com/:f:/r/teams/GROUP-ELEC490498Group1/Shared%20Documents/General/Quicksilver%20Data?csf=1&web=1&e=kTx4b5).
+
+## Compiling Uftrace
 
 ### Normal environments
 You should be able to build uftrace following the instructions in their repositiory just fine.

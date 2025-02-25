@@ -49,6 +49,7 @@ if __name__ == "__main__":
   group = parser.add_mutually_exclusive_group(required=True)
   group.add_argument("-f", "--file", help="The input file to analyze", type=str)
   group.add_argument("-d", "--dir", help="A compressed directory containing multiple runs (.tar.gz) to analyze", type=str)
+  # TODO: -c argument to allow comparing two runs
   args = parser.parse_args()
   if args.file:
     analyze_csv(args.file)

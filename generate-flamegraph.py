@@ -1,4 +1,5 @@
 import json
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from matplotlib import colormaps
@@ -6,6 +7,8 @@ from matplotlib.widgets import Button
 import pandas as pd
 import argparse
 from os import path
+
+matplotlib.use("TkAgg")
 
 units = {"Avg_MHz": "Avg MHz (Hz)", "FREQ": "Frequency (Hz)"}
 

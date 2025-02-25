@@ -9,6 +9,26 @@ Example repo showing how to use uftrace output in Python
 ## Testing data
 Please store all testing data in the [team Sharepoint](https://queensuca.sharepoint.com/:f:/r/teams/GROUP-ELEC490498Group1/Shared%20Documents/General/Quicksilver%20Data?csf=1&web=1&e=kTx4b5).
 
+## Visualizing test data
+
+### Flamegraph
+
+To see a flamegraph of the run, use the following command:
+```
+python generate-flamegraph.py --data-dir=<directory of run> --cpu=<CPUs to view> --fields=<fields to view>
+```
+
+To view energy and time stats of an aggregate run (the .gzip files `./trace-qs.sh` generates) run:
+```
+python get-stats.py --dir=<data directory of run>
+```
+You can also view a side-by-side comparision chart between two runs using:
+```
+python get-stats.py --compare <directory of run 1> <directory of run 2>
+```
+The above command will output a file `run-comparison.png` which shows the comparison.
+
+
 ## Compiling Uftrace
 
 ### Normal environments
@@ -90,3 +110,10 @@ LDFLAGS = $(OPENMP_LDFLAGS)
 
 ```
 and then `make clean && make` to recompile. From the on out it should work.
+
+## Live Data
+To start the turbostat recorder for InfluxDB, use 
+```
+python turbostat-influx.py <run_id>
+```
+where **run_id** is the associated run_id that Quicksilver data reporting will use

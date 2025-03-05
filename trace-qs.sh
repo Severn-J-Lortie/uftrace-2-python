@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 # Run Quicksilver and record the trace data and output it to ./data
-QS_DIR=~/git/Quicksilver # You'll probably need to change this
-UF_DIR=~/git/uftrace-2-python # This as well
+source ${QS_DIR}/xml_profile
 
 sudo echo # doing a no-op to force sudo before the turbostat script
 

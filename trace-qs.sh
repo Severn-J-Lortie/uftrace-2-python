@@ -40,7 +40,5 @@ for i in {1..3}; do
 done
 
 # Compress
-for dir in ${UF_DIR}/data/*; do
-    tar -czf "${dir}.tar.gz" -C "${UF_DIR}/data" "$(basename "$dir")"
-    rm -rf ${dir}
-done
+tar -czf "${OUTPUT_PATH}.tar.gz" -C "${UF_DIR}/data" "$(basename "$OUTPUT_PATH")"
+rm -rf ${OUTPUT_PATH}
